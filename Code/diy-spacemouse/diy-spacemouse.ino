@@ -1,228 +1,274 @@
+/*
+ This sketch initializes the IMU filter and outputs Euler angles. Extended to optionally act as a USB HID Mouse
+ (X/Y only) controlled via Serial commands to avoid losing pointer control.
+
+ Serial commands:
+   - "hid on"  : enable HID mouse output (X/Y only)
+   - "hid off" : disable HID mouse output
+   - "status"  : print current status and settings
+   - "help"    : print this help
+   - "reset"   : reboot the MCU via software
+*/
+
+/* NOTE: The accelerometer MUST be calibrated for the fusion to work. Adjust the 
+   AX, AY, AND AZ offsets until the sensor reads (0,0,0) at rest. 
+*/
+
+#include "src/filter/basicMPU6050.h"       // Library for IMU sensor. See this link: https://github.com/RCmags/basicMPU6050
+#include "src/filter/imuFilter.h"          // Library for IMU sensor fusion. 
+#include <math.h>
+// TinyUSB HID (composite with CDC) for mouse control
 #include <TinyUSB_Mouse_and_Keyboard.h>
-#include <OneButton.h>
-#include <SimpleKalmanFilter.h>
-#include <Wire.h>
-
-#include "I2Cdev.h"
-#include "MPU6050.h"
-
-/* MPU6050 default I2C address is 0x68*/
-MPU6050 mpu;
-
-static constexpr float ACCEL_SENS = 16384.0f;  // LSB/g for +/-2g
-static constexpr float GYRO_SENS = 131.0f;     // LSB/(deg/s) for +/-250deg/s
-static constexpr uint16_t CALIBRATION_DISCARD = 50;  // discard first noisy readings
-
-/* Kalman filters for x, y, z axes */
-SimpleKalmanFilter xFilter(1, 1, 0.5), yFilter(1, 1, 0.5), zFilter(1, 1, 0.01);
-
-// Setup buttons
-OneButton button1(27, true);
-OneButton button2(24, true);
+#define USE_TINYUSB_MOUSE 1
 
 
-float xOffset = 0, yOffset = 0, zOffset = 0;
-float xCurrent = 0, yCurrent = 0, zCurrent = 0;
+// ===== Forward declarations (prototypes) =====
 
-#define CAL_SAMPLES     300
-#define FAST_CAL_TIME   100
-#define SLOW_CAL_TIME   1000
+void sendHIDreport();
+void printStatus();
+void printHelp();
+void handleSerial();
+void rebootMCU();
 
-float sensivity = 0.1;
-int outRange = 127;        // Max allowed in HID report
-float xyThreshold = 0.05;  // Center threshold
-float zThreshold = xyThreshold * 1.5;
+// Gyro settings:
+#define         LP_FILTER   3           // Low pass filter.                    Value from 0 to 6
+#define         GYRO_SENS   2           // Gyro sensitivity.                   Value from 0 to 3
+#define         ACCEL_SENS  2           // Accelerometer sensitivity.          Value from 0 to 3
+#define         ADDRESS_A0  LOW         // I2C address from state of A0 pin.   A0 -> GND : ADDRESS_A0 = LOW
+                                        //                                     A0 -> 5v  : ADDRESS_A0 = HIGH
+// Accelerometer offset:
+constexpr int   AX_OFFSET = 0;          // Use these values to calibrate the accelerometer. The sensor should output 1.0g if held level. 
+constexpr int   AY_OFFSET = 0;          // These values are unlikely to be zero.
+constexpr int   AZ_OFFSET = 0;
 
-bool isOrbit = false;
+//-- Set the template parameters:
+basicMPU6050<LP_FILTER,  GYRO_SENS,  ACCEL_SENS, ADDRESS_A0,
+             AX_OFFSET,  AY_OFFSET,  AZ_OFFSET
+            >imu;
+   
+// =========== Settings ===========
+imuFilter fusion;
 
-bool readMpu(float &xAccel, float &yAccel, float &zGyro) {
-  int16_t ax, ay, az, gx, gy, gz;
-  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+// Serial print change-detection (must be declared before loop)
+static const float kPrintEpsDeg = 0.02f;  // print only if any axis changes by >= this (deg)
+static bool firstPrint = true;
+static float lastPitch = 0.0f, lastYaw = 0.0f, lastRoll = 0.0f;
 
-  xAccel = static_cast<float>(ax) / ACCEL_SENS;
-  yAccel = static_cast<float>(ay) / ACCEL_SENS;
-  // Gyro already reports deg/s, keep sign consistent with previous Z axis sense
-  zGyro = static_cast<float>(gz) / GYRO_SENS;
+/* Fusion gain, value between 0 and 1 - Determines orientation correction with respect to gravity vector. 
+If set to 1 the gyroscope is dissabled. If set to 0 the accelerometer is dissabled (equivant to gyro-only) */
+#define GAIN          0.5     
 
-  return true;
-}
+/* Standard deviation of acceleration. Accelerations relative to (0,0,1)g outside of this band are suppresed.
+Accelerations within this band are used to update the orientation. [Measured in g-force] */                          
+#define SD_ACCEL      0.2     
 
-// Go to home view by pressing Windows+Shift+H
-void goHome() {
-  Keyboard.press(KEY_LEFT_GUI);
-  Keyboard.press(KEY_LEFT_SHIFT);
-  Keyboard.write('h');
-
-  delay(10);
-  Keyboard.releaseAll();
-  Serial.println("pressed home");
-}
-
-// fit to view by pressing the middle mouse button twice
-void fitToScreen() {
-  Mouse.press(MOUSE_MIDDLE);
-  Mouse.release(MOUSE_MIDDLE);
-  Mouse.press(MOUSE_MIDDLE);
-  Mouse.release(MOUSE_MIDDLE);
-
-  Serial.println("pressed fit");
-}
-
-void mpuCalibration() {
-  Serial.println("Calibrating MPU6050 offsets...");
-
-  double xSum = 0.0;
-  double ySum = 0.0;
-  double zSum = 0.0;
-
-  const uint16_t totalSamples = CAL_SAMPLES + CALIBRATION_DISCARD;
-  for (uint16_t i = 0; i < totalSamples; ++i) {
-    float ax, ay, gz;
-    readMpu(ax, ay, gz);
-
-    if (i >= CALIBRATION_DISCARD) {
-      xSum += ax;
-      ySum += ay;
-      zSum += gz;
-    }
-
-    delay(5);
-  }
-
-  const float divisor = static_cast<float>(CAL_SAMPLES);
-  xOffset = xSum / divisor;
-  yOffset = ySum / divisor;
-  zOffset = zSum / divisor;
-
-  Serial.print("Offsets -> X:");
-  Serial.print(xOffset, 4);
-  Serial.print(" Y:");
-  Serial.print(yOffset, 4);
-  Serial.print(" Z:");
-  Serial.println(zOffset, 4);
-}
+/* Enable sensor fusion. Setting to "true" enables gravity correction */
+#define FUSION        true    
 
 void setup() {
-  /* I2C initialization */
-  Wire.begin();
-  Wire.setClock(400000);
-
-  /* Buttons */
-  button1.attachClick(goHome);
-  button1.attachLongPressStop(goHome);
-
-  button2.attachClick(fitToScreen);
-  button2.attachLongPressStop(fitToScreen);
-
-  /* Mouse add Keyboard initialization */
   Mouse.begin();
   Keyboard.begin();
 
+  delay(2000);  // Wait for serial monitor
   Serial.begin(115200);
-  while (!Serial) delay(100);
-  Serial.println("Initializing I2C devices...");
+  while (!Serial);
   
-  /*Initialize device and check connection*/   
-  mpu.initialize();
-  mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
-  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
-  mpu.setDLPFMode(MPU6050_DLPF_BW_5);
-  Serial.print("Testing MPU6050 connection...");
-  if(!mpu.testConnection()){
-    Serial.println(" failed.");  
-  }
-  else{
-    Serial.println(" successful.");
-  }
+  // Calibrate imu
+  imu.setup();
+  imu.setBias();
 
-  mpuCalibration();
+  #if FUSION
+    // Set quaternion with gravity vector
+    fusion.setup( imu.ax(), imu.ay(), imu.az() );     
+  #else 
+    // Just use gyro
+    fusion.setup();                                   
+  #endif
+  
+  printHelp();
 }
 
 void loop() {
+  // Update filter:
+  #if FUSION
+    /* NOTE: GAIN and SD_ACCEL are optional parameters */
+    fusion.update( imu.gx(), imu.gy(), imu.gz(), imu.ax(), imu.ay(), imu.az(), GAIN, SD_ACCEL );
+  #else
+    // Only use gyroscope
+    fusion.update( imu.gx(), imu.gy(), imu.gz() );
+  #endif
 
-  // keep watching the push buttons
-  button1.tick();
-  button2.tick();
+  // Read current angles
+  float pitch = fusion.pitch();
+  float yaw   = fusion.yaw();
+  float roll  = fusion.roll();
 
-  float rawX = xOffset;
-  float rawY = yOffset;
-  float rawZ = zOffset;
-
-  if (readMpu(rawX, rawY, rawZ)) {
-    // update the filters
-    xCurrent = xFilter.updateEstimate(rawX - xOffset);
-    yCurrent = yFilter.updateEstimate(rawY - yOffset);
-    zCurrent = zFilter.updateEstimate(rawZ - zOffset);
-  }
-
-  static uint32_t calTime = millis();
-  static uint32_t lastMovementTime = millis();
-  static float lastXCurrent = 0, lastYCurrent = 0;
-
-  // Detect if there's actual movement (not just drift)
-  bool hasMovement = (abs(xCurrent - lastXCurrent) > 0.01 || abs(yCurrent - lastYCurrent) > 0.01);
-  if (hasMovement) {
-    lastMovementTime = millis();
-    lastXCurrent = xCurrent;
-    lastYCurrent = yCurrent;
-  }
-
-  // check the center threshold
-  if ((abs(xCurrent) > xyThreshold || abs(yCurrent) > xyThreshold) && (millis() - lastMovementTime < SLOW_CAL_TIME)) {  // Force calibration if no real movement for 2 seconds
-
-    int xMove = outRange * xCurrent * sensivity;
-    int yMove = outRange * yCurrent * sensivity;
-    xMove = constrain(xMove, -outRange, outRange);
-    yMove = constrain(yMove, -outRange, outRange);
-
-
-    // press shift to orbit in Fusion 360 if the pan threshold is not corssed (zAxis)
-    // if (abs(zCurrent) < zThreshold && !isOrbit)
-    // {
-    //   Keyboard.press(KEY_LEFT_SHIFT);
-    //   isOrbit = true;
-    // }
-
-    // pan or orbit by holding the middle mouse button and moving propotionaly to the xy axis
-    Mouse.press(MOUSE_MIDDLE);
-    Mouse.move(yMove, xMove, 0);
-    delay(2);
-    
-
-    Serial.print(xCurrent);
-    Serial.print(",");
-    Serial.print(yCurrent);
-    Serial.print(",");
-    Serial.print(zCurrent);
-    Serial.print("  ->  ");
-    Serial.print(xMove);
-    Serial.print(",");
-    Serial.print(yMove);
+  // Display only when they change beyond threshold
+  bool changed = firstPrint
+              || fabs(pitch - lastPitch) >= kPrintEpsDeg
+              || fabs(yaw   - lastYaw)   >= kPrintEpsDeg
+              || fabs(roll  - lastRoll)  >= kPrintEpsDeg;
+  if (changed) {
+    Serial.print(pitch, 3);
+    Serial.print(" ");
+    Serial.print(yaw, 3);
+    Serial.print(" ");
+    Serial.print(roll, 3);
     Serial.println();
 
-  } else if (millis() - calTime >= FAST_CAL_TIME || (millis() - lastMovementTime >= SLOW_CAL_TIME && (abs(xCurrent) > xyThreshold || abs(yCurrent) > xyThreshold))) {
-    calTime = millis();
+    lastPitch = pitch;
+    lastYaw   = yaw;
+    lastRoll  = roll;
+    firstPrint = false;
+  }
 
-    // Dynamic calibration with proper exponential moving average
-    const float alpha = 0.01;  // Small factor for slow adaptation (1% update rate)
-    xOffset = xOffset * (1 - alpha) + rawX * alpha;
-    yOffset = yOffset * (1 - alpha) + rawY * alpha;
-    zOffset = zOffset * (1 - alpha) + rawZ * alpha;
+  // Handle serial commands (non-blocking)
+  handleSerial();
 
-    // Serial.print("Cal: ");
-    // Serial.print(xOffset, 4);
-    // Serial.print(", ");
-    // Serial.print(yOffset, 4);
-    // Serial.print(", ");
-    // Serial.println(zOffset, 4);
-    delay(20);
-  } else {
-    // release the mouse and keyboard if within the center threshold
-    // Mouse.release(MOUSE_MIDDLE);
-    // Keyboard.releaseAll();
-    // isOrbit = false;
-    // delay(10);
-    Mouse.release(MOUSE_MIDDLE);
+  // Optionally send HID mouse movement based on IMU angles
+  sendHIDreport();
+}
+static bool hidEnabled = false;           // Toggled via Serial
+static uint32_t lastHidMs = 0;            // Rate limit
+
+// Tuning parameters
+static const float kSensitivity = 3.0f;   // pixels per degree (adjust as needed)
+static const float kDeadzoneDeg = 1.0f;   // ignore small tilt
+static const uint32_t kHidIntervalMs = 10; // 100 Hz max
+
+// Response curve & anti-drift
+static const float kGamma = 1.4f;         // >1 accelerates with angle magnitude
+static const float kCenterLockDeg = 0.6f; // if inside, freeze residuals to prevent drift
+static float fracX = 0.0f, fracY = 0.0f;  // fractional accumulators for sub-pixel motion
+
+
+static inline int8_t clipInt8(int val) {
+  if (val > 127) return 127;
+  if (val < -127) return -127;
+  return (int8_t)val;
+}
+
+static inline float applyDeadzone(float a_deg, float dz_deg) {
+  float sa = fabs(a_deg);
+  if (sa <= dz_deg) return 0.0f;
+  float out = sa - dz_deg; // subtractive deadzone
+  return (a_deg < 0 ? -out : out);
+}
+
+void sendHIDreport() {
+  if (!hidEnabled) return;
+  
+  uint32_t now = millis();
+  if (now - lastHidMs < kHidIntervalMs) return; // rate limit
+  lastHidMs = now;
+
+  // Map roll->X, pitch->Y (invert Y so forward tilt moves cursor up)
+  float pitch = fusion.pitch();
+  float roll  = fusion.roll();
+
+  // Center lock to kill drift when essentially centered
+  if (fabs(pitch) < kCenterLockDeg && fabs(roll) < kCenterLockDeg) {
+    fracX = 0.0f;
+    fracY = 0.0f;
+    return;
+  }
+
+  // Apply subtractive deadzone and response curve (power gamma)
+  float ex = applyDeadzone(roll,  kDeadzoneDeg);
+  float ey = applyDeadzone(pitch, kDeadzoneDeg);
+
+  float dx_f = (ex == 0.0f) ? 0.0f : (kSensitivity * (ex < 0 ? -powf(-ex, kGamma) : powf(ex, kGamma)));
+  float dy_f = (ey == 0.0f) ? 0.0f : (-kSensitivity * (ey < 0 ? -powf(-ey, kGamma) : powf(ey, kGamma)));
+
+  // Accumulate fractional motion to avoid quantization flat spots
+  float accX = dx_f + fracX;
+  float accY = dy_f + fracY;
+  int dx = (accX >= 0 ? (int)floorf(accX) : (int)ceilf(accX));
+  int dy = (accY >= 0 ? (int)floorf(accY) : (int)ceilf(accY));
+  fracX = accX - (float)dx;
+  fracY = accY - (float)dy;
+
+  // Convert to int8 and clip
+  int8_t dx8 = clipInt8(dx);
+  int8_t dy8 = clipInt8(dy);
+  if (dx8 == 0 && dy8 == 0) return;
+
+  // High-level TinyUSB Mouse API
+  Mouse.move(dx8, dy8, 0);  
+  // Serial.print(F("HID move: "));
+  // Serial.print(dx);   
+  // Serial.print(" ");
+  // Serial.println(dy);   
+}
+
+// ================= Serial Command Interface =================
+
+String cmdBuf;
+
+void printStatus() {
+  Serial.print(F("HID: "));
+  Serial.println(hidEnabled ? F("ON") : F("OFF"));
+  Serial.print(F("Sensitivity: "));
+  Serial.println(kSensitivity, 2);
+  Serial.print(F("Deadzone (deg): "));
+  Serial.println(kDeadzoneDeg, 2);
+  Serial.print(F("Print eps (deg): "));
+  Serial.println(kPrintEpsDeg, 2);
+}
+
+void printHelp() {
+  Serial.println();
+  Serial.println(F("Commands:"));
+  Serial.println(F("  hid on     - enable HID mouse output (X/Y only)"));
+  Serial.println(F("  hid off    - disable HID mouse output"));
+  Serial.println(F("  status     - show current status"));
+  Serial.println(F("  help       - show this help"));
+  Serial.println(F("  reset      - reboot MCU"));
+  Serial.println();
+}
+
+void handleSerial() {
+  while (Serial.available()) {
+    char c = (char)Serial.read();
+    if (c == '\r') continue;
+    if (c == '\n') {
+      // Process command
+      cmdBuf.trim();
+      if (cmdBuf.length()) {
+        if (cmdBuf.equalsIgnoreCase("hid on")) {
+          hidEnabled = true;
+          Serial.println(F("HID enabled"));
+          // send a neutral report to wake host HID parser
+          Mouse.move(0, 0);          
+        } else if (cmdBuf.equalsIgnoreCase("hid off")) {
+          hidEnabled = false;
+          Serial.println(F("HID disabled"));
+        } else if (cmdBuf.equalsIgnoreCase("status")) {
+          printStatus();
+        } else if (cmdBuf.equalsIgnoreCase("help")) {
+          printHelp();
+        } else if (cmdBuf.equalsIgnoreCase("reset")) {
+          Serial.println(F("Rebooting..."));
+          Serial.flush();
+          delay(50);
+          rebootMCU();
+        } else {
+          Serial.print(F("Unknown command: "));
+          Serial.println(cmdBuf);
+          printHelp();
+        }
+      }
+      cmdBuf = "";
+    } else {
+      // accumulate (limit size)
+      if (cmdBuf.length() < 64) cmdBuf += c;
+    }
   }
 }
 
+// ================= Software Reboot =================
+
+void rebootMCU() {
+  // Attempt platform-specific reboot methods. Many TinyUSB boards are ARM Cortex-M (NVIC_SystemReset).
+  NVIC_SystemReset();
+}
