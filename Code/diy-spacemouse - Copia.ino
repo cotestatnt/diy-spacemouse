@@ -1,25 +1,18 @@
 #include <TinyUSB_Mouse_and_Keyboard.h>
 #include <OneButton.h>
+#include <Tlv493d.h>
 #include <SimpleKalmanFilter.h>
-#include <Wire.h>
 
-#include "I2Cdev.h"
-#include "MPU6050.h"
 
-/* MPU6050 default I2C address is 0x68*/
-MPU6050 mpu;
+#include <Adafruit_QMC5883P.h>
 
-static constexpr float ACCEL_SENS = 16384.0f;  // LSB/g for +/-2g
-static constexpr float GYRO_SENS = 131.0f;     // LSB/(deg/s) for +/-250deg/s
-static constexpr uint16_t CALIBRATION_DISCARD = 50;  // discard first noisy readings
+Adafruit_QMC5883P mag;
 
-/* Kalman filters for x, y, z axes */
 SimpleKalmanFilter xFilter(1, 1, 0.5), yFilter(1, 1, 0.5), zFilter(1, 1, 0.01);
 
 // Setup buttons
 OneButton button1(27, true);
 OneButton button2(24, true);
-
 
 float xOffset = 0, yOffset = 0, zOffset = 0;
 float xCurrent = 0, yCurrent = 0, zCurrent = 0;
@@ -35,107 +28,58 @@ float zThreshold = xyThreshold * 1.5;
 
 bool isOrbit = false;
 
-bool readMpu(float &xAccel, float &yAccel, float &zGyro) {
-  int16_t ax, ay, az, gx, gy, gz;
-  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-
-  xAccel = static_cast<float>(ax) / ACCEL_SENS;
-  yAccel = static_cast<float>(ay) / ACCEL_SENS;
-  // Gyro already reports deg/s, keep sign consistent with previous Z axis sense
-  zGyro = static_cast<float>(gz) / GYRO_SENS;
-
-  return true;
-}
-
-// Go to home view by pressing Windows+Shift+H
-void goHome() {
-  Keyboard.press(KEY_LEFT_GUI);
-  Keyboard.press(KEY_LEFT_SHIFT);
-  Keyboard.write('h');
-
-  delay(10);
-  Keyboard.releaseAll();
-  Serial.println("pressed home");
-}
-
-// fit to view by pressing the middle mouse button twice
-void fitToScreen() {
-  Mouse.press(MOUSE_MIDDLE);
-  Mouse.release(MOUSE_MIDDLE);
-  Mouse.press(MOUSE_MIDDLE);
-  Mouse.release(MOUSE_MIDDLE);
-
-  Serial.println("pressed fit");
-}
-
-void mpuCalibration() {
-  Serial.println("Calibrating MPU6050 offsets...");
-
-  double xSum = 0.0;
-  double ySum = 0.0;
-  double zSum = 0.0;
-
-  const uint16_t totalSamples = CAL_SAMPLES + CALIBRATION_DISCARD;
-  for (uint16_t i = 0; i < totalSamples; ++i) {
-    float ax, ay, gz;
-    readMpu(ax, ay, gz);
-
-    if (i >= CALIBRATION_DISCARD) {
-      xSum += ax;
-      ySum += ay;
-      zSum += gz;
-    }
-
-    delay(5);
-  }
-
-  const float divisor = static_cast<float>(CAL_SAMPLES);
-  xOffset = xSum / divisor;
-  yOffset = ySum / divisor;
-  zOffset = zSum / divisor;
-
-  Serial.print("Offsets -> X:");
-  Serial.print(xOffset, 4);
-  Serial.print(" Y:");
-  Serial.print(yOffset, 4);
-  Serial.print(" Z:");
-  Serial.println(zOffset, 4);
-}
-
 void setup() {
-  /* I2C initialization */
-  Wire.begin();
-  Wire.setClock(400000);
 
-  /* Buttons */
   button1.attachClick(goHome);
   button1.attachLongPressStop(goHome);
 
   button2.attachClick(fitToScreen);
   button2.attachLongPressStop(fitToScreen);
 
-  /* Mouse add Keyboard initialization */
+  // mouse and keyboard init
   Mouse.begin();
   Keyboard.begin();
 
   Serial.begin(115200);
+  Wire.begin();
+
   while (!Serial) delay(100);
-  Serial.println("Initializing I2C devices...");
-  
-  /*Initialize device and check connection*/   
-  mpu.initialize();
-  mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
-  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
-  mpu.setDLPFMode(MPU6050_DLPF_BW_5);
-  Serial.print("Testing MPU6050 connection...");
-  if(!mpu.testConnection()){
-    Serial.println(" failed.");  
-  }
-  else{
-    Serial.println(" successful.");
+
+  if (!mag.begin()) {
+    Serial.println("Failed to find QMC5883P chip");
+    while (1) delay(100);
   }
 
-  mpuCalibration();
+  Serial.println("QMC5883P Found!");
+
+  // Set to normal mode
+  mag.setMode(QMC5883P_MODE_CONTINUOUS);
+  mag.setODR(QMC5883P_ODR_100HZ);
+  mag.setOSR(QMC5883P_OSR_4);
+  mag.setDSR(QMC5883P_DSR_2);
+  mag.setRange(QMC5883P_RANGE_8G);
+  mag.setSetResetMode(QMC5883P_SETRESET_ON);
+
+  // crude offset calibration on first boot
+  for (int i = 0; i < CAL_SAMPLES; ++i) {
+
+    float gx, gy, gz;
+    if (mag.getGaussField(&gx, &gy, &gz)) {
+      xOffset += gx;
+      yOffset += gy;
+      zOffset += gz;
+      Serial.print(".");
+    }
+  }
+
+  xOffset = xOffset / CAL_SAMPLES;
+  yOffset = yOffset / CAL_SAMPLES;
+  zOffset = zOffset / CAL_SAMPLES;
+
+  Serial.println();
+  Serial.println(xOffset);
+  Serial.println(yOffset);
+  Serial.println(zOffset);
 }
 
 void loop() {
@@ -144,15 +88,12 @@ void loop() {
   button1.tick();
   button2.tick();
 
-  float rawX = xOffset;
-  float rawY = yOffset;
-  float rawZ = zOffset;
-
-  if (readMpu(rawX, rawY, rawZ)) {
+  float gx, gy, gz;
+  if (mag.getGaussField(&gx, &gy, &gz)) {
     // update the filters
-    xCurrent = xFilter.updateEstimate(rawX - xOffset);
-    yCurrent = yFilter.updateEstimate(rawY - yOffset);
-    zCurrent = zFilter.updateEstimate(rawZ - zOffset);
+    xCurrent = xFilter.updateEstimate(gx - xOffset);
+    yCurrent = yFilter.updateEstimate(gy - yOffset);
+    zCurrent = zFilter.updateEstimate(gz - zOffset);
   }
 
   static uint32_t calTime = millis();
@@ -205,9 +146,9 @@ void loop() {
 
     // Dynamic calibration with proper exponential moving average
     const float alpha = 0.01;  // Small factor for slow adaptation (1% update rate)
-    xOffset = xOffset * (1 - alpha) + rawX * alpha;
-    yOffset = yOffset * (1 - alpha) + rawY * alpha;
-    zOffset = zOffset * (1 - alpha) + rawZ * alpha;
+    xOffset = xOffset * (1 - alpha) + gx * alpha;
+    yOffset = yOffset * (1 - alpha) + gy * alpha;
+    zOffset = zOffset * (1 - alpha) + gz * alpha;
 
     // Serial.print("Cal: ");
     // Serial.print(xOffset, 4);
@@ -226,3 +167,23 @@ void loop() {
   }
 }
 
+// go to home view in Fusion 360 by pressing  (CMD + SHIFT + H) shortcut assigned to the custom Add-in command
+void goHome() {
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(KEY_LEFT_SHIFT);
+  Keyboard.write('h');
+
+  delay(10);
+  Keyboard.releaseAll();
+  Serial.println("pressed home");
+}
+
+// fit to view by pressing the middle mouse button twice
+void fitToScreen() {
+  Mouse.press(MOUSE_MIDDLE);
+  Mouse.release(MOUSE_MIDDLE);
+  Mouse.press(MOUSE_MIDDLE);
+  Mouse.release(MOUSE_MIDDLE);
+
+  Serial.println("pressed fit");
+}
