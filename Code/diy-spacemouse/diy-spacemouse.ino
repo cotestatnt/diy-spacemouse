@@ -19,8 +19,6 @@
 #include <math.h>
 // TinyUSB HID (composite with CDC) for mouse control
 #include <TinyUSB_Mouse_and_Keyboard.h>
-#define USE_TINYUSB_MOUSE 1
-
 
 // ===== Forward declarations (prototypes) =====
 
