@@ -1,0 +1,32 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\cotes\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\3.3.3\\cores\\esp32"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\cotes\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\3.3.3\\variants\\esp32s3"
+  },
+  {
+    "Sourcefile": "C:\\Cloud\\diy-spacemouse\\useless\\build\\sketch\\useless.ino.cpp",
+    "Include": "ESP32Servo.h",
+    "Includepath": "C:\\Users\\cotes\\OneDrive\\Documenti\\Arduino\\libraries\\ESP32Servo\\src"
+  },
+  {
+    "Sourcefile": "C:\\Cloud\\diy-spacemouse\\useless\\build\\sketch\\useless.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\cotes\\OneDrive\\Documenti\\Arduino\\libraries\\ESP32Servo\\src\\ESP32PWM.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\cotes\\OneDrive\\Documenti\\Arduino\\libraries\\ESP32Servo\\src\\ESP32Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
