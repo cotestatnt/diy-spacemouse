@@ -1,0 +1,9 @@
+{
+  "additionalFiles": "..\\..\\..,..\\..\\..,..\\..\\..\\..,..\\..\\..\\..\\..,..\\..\\..\\..\\..,..\\..\\..\\..\\..,..\\..\\..\\..\\..,..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "build.warn_data_percentage=75",
+  "fqbn": "Seeeduino:nrf52:xiaonRF52840:softdevice=s140v6,debug=l0",
+  "hardwareFolders": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages",
+  "otherLibrariesFolders": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries",
+  "sketchLocation": "D:\\diy-spacemouse\\useless\\test_vl53l0x"
+}

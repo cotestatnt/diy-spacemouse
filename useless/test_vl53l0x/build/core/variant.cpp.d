@@ -1,0 +1,37 @@
+D:\diy-spacemouse\useless\test_vl53l0x\build\core\variant.cpp.o: \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\variants\Seeed_XIAO_nRF52840\variant.cpp \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\variants\Seeed_XIAO_nRF52840\variant.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/WVariant.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf52840.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\tools\CMSIS\5.7.0/CMSIS/Core/Include/core_cm4.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\tools\CMSIS\5.7.0/CMSIS/Core/Include/cmsis_version.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\tools\CMSIS\5.7.0/CMSIS/Core/Include/cmsis_compiler.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\tools\CMSIS\5.7.0/CMSIS/Core/Include/cmsis_gcc.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\tools\CMSIS\5.7.0/CMSIS/Core/Include/mpu_armv7.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/system_nrf52840.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/system_nrf.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf52840_bitfields.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf51_to_nrf52840.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf52_to_nrf52840.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/compiler_abstraction.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_soc.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_svc.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_error.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_error_soc.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_sdm.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_error_sdm.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/softdevice/s140_nrf52_7.3.0_API/include/nrf_soc.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/hal/nrf_gpio.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/nrfx.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx_config.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/drivers/nrfx_common.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf_peripherals.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/mdk/nrf52840_peripherals.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx_glue.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/soc/nrfx_irqs.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/soc/nrfx_irqs_nrf52840.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/soc/nrfx_coredep.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/nordic/nrfx/drivers/nrfx_errors.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/wiring_constants.h \
+ C:\Users\Tolentino\AppData\Local\Arduino15\packages\Seeeduino\hardware\nrf52\1.1.12\cores\nRF5/wiring_digital.h

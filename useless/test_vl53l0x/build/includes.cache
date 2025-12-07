@@ -1,0 +1,332 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\cores\\nRF5"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\variants\\Seeed_XIAO_nRF52840"
+  },
+  {
+    "Sourcefile": "D:\\diy-spacemouse\\useless\\test_vl53l0x\\build\\sketch\\test_vl53l0x.ino.cpp",
+    "Include": "Adafruit_TinyUSB.h",
+    "Includepath": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src"
+  },
+  {
+    "Sourcefile": "D:\\diy-spacemouse\\useless\\test_vl53l0x\\build\\sketch\\test_vl53l0x.ino.cpp",
+    "Include": "SPI.h",
+    "Includepath": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\libraries\\SPI"
+  },
+  {
+    "Sourcefile": "D:\\diy-spacemouse\\useless\\test_vl53l0x\\build\\sketch\\test_vl53l0x.ino.cpp",
+    "Include": "Wire.h",
+    "Includepath": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\libraries\\Wire"
+  },
+  {
+    "Sourcefile": "D:\\diy-spacemouse\\useless\\test_vl53l0x\\build\\sketch\\test_vl53l0x.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\diy-spacemouse\\useless\\test_vl53l0x\\build\\sketch\\src\\VL53L0X\\VL53L0X.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\Adafruit_TinyUSB_API.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\Adafruit_USBD_CDC.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\Adafruit_USBD_Device.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\Adafruit_USBD_Interface.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\Adafruit_USBH_Host.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\cdc\\Adafruit_USBH_CDC.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\hid\\Adafruit_USBD_HID.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\midi\\Adafruit_USBD_MIDI.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\msc\\Adafruit_USBD_MSC.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\msc\\Adafruit_USBH_MSC.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\ports\\ch32\\Adafruit_TinyUSB_ch32.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\ports\\esp32\\Adafruit_TinyUSB_esp32.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\ports\\nrf\\Adafruit_TinyUSB_nrf.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\ports\\rp2040\\Adafruit_TinyUSB_rp2040.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\ports\\samd\\Adafruit_TinyUSB_samd.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\video\\Adafruit_USBD_Video.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\arduino\\webusb\\Adafruit_USBD_WebUSB.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\audio\\audio_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\bth\\bth_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\cdc\\cdc_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\cdc\\cdc_host.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\dfu\\dfu_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\dfu\\dfu_rt_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\hid\\hid_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\hid\\hid_host.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\midi\\midi_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\midi\\midi_host.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\msc\\msc_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\msc\\msc_host.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\net\\ecm_rndis_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\net\\ncm_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\usbtmc\\usbtmc_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\vendor\\vendor_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\class\\video\\video_device.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\common\\tusb_fifo.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\device\\usbd.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\device\\usbd_control.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\host\\hub.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\host\\usbh.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\analog\\max3421\\hcd_max3421.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\microchip\\samd\\dcd_samd.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\microchip\\samd\\hcd_samd.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\nordic\\nrf5x\\dcd_nrf5x.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\raspberrypi\\pio_usb\\dcd_pio_usb.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\raspberrypi\\pio_usb\\hcd_pio_usb.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\raspberrypi\\rp2040\\dcd_rp2040.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\raspberrypi\\rp2040\\hcd_rp2040.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\raspberrypi\\rp2040\\rp2040_usb.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\st\\stm32_fsdev\\dcd_stm32_fsdev.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\synopsys\\dwc2\\dcd_dwc2.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\synopsys\\dwc2\\dwc2_common.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\synopsys\\dwc2\\hcd_dwc2.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\wch\\dcd_ch32_usbfs.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\wch\\dcd_ch32_usbhs.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\portable\\wch\\hcd_ch32_usbfs.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\Documents\\Arduino\\libraries\\Adafruit_TinyUSB_Library\\src\\tusb.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\libraries\\SPI\\SPI.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\libraries\\SPI\\SPI_nrf52832.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\Tolentino\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.12\\libraries\\Wire\\Wire_nRF52.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
