@@ -9,6 +9,14 @@ typedef struct {
   uint8_t servoPin;
 } ISR_servo_t;
 
+
+// Struct to manage servo state and goals for tasks
+struct ServoGoal {
+    volatile int target_pos;
+    volatile int speed_delay;
+    volatile int current_pos;
+};
+
 // Classe per il controllo dei servo via seriale
 class ServoConsole {
 private:
